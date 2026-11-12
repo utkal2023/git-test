@@ -1,309 +1,404 @@
 
-console.log("Git Knowledge Challenge loaded successfully");
+"use strict";
 
-// ----------------------------------
-// QUIZ QUESTIONS AND ANSWERS
-// ----------------------------------
+// ========================================
+// GIT WORKSHOP QUIZ QUESTIONS
+// ========================================
 
 const questions = [
     {
-        question: "What happens if two developers push changes to the same branch?",
+        question: "Which command creates a new Git repository?",
         options: [
-            "Both changes always overwrite each other",
-            "The second push may be rejected if the remote branch has new commits",
-            "Git automatically deletes one developer's code",
-            "Git automatically creates a new branch"
+            "git start",
+            "git init",
+            "git create",
+            "git new"
         ],
         answer: 1,
-        explanation: "Git rejects a non-fast-forward push when the remote has commits that your local branch does not contain. Fetch and integrate those changes before pushing."
+        explanation: "git init initializes a new Git repository."
     },
     {
-        question: "Can a developer directly push to a protected main branch?",
+        question: "Which command downloads a remote repository to your computer?",
         options: [
-            "Yes, always",
-            "Yes, using git push --force",
-            "No, branch protection can block direct pushes",
-            "Only during working hours"
+            "git pull",
+            "git push",
+            "git clone",
+            "git fetch"
         ],
         answer: 2,
-        explanation: "Branch protection rules can prevent direct pushes and enforce Pull Requests, approvals and other checks."
+        explanation: "git clone copies a remote repository to your local machine."
     },
     {
-        question: "What happens when two people modify the same line?",
+        question: "You have modified a file. Which command stages it for commit?",
         options: [
-            "Git always selects the latest change",
-            "A merge conflict may occur",
-            "Both changes are automatically combined",
-            "The repository gets deleted"
+            "git commit",
+            "git add",
+            "git push",
+            "git status"
         ],
         answer: 1,
-        explanation: "Git may report a merge conflict when it cannot automatically reconcile overlapping changes. Developers must resolve the conflict."
+        explanation: "git add stages changes so they can be included in a commit."
     },
     {
-        question: "Can we delete a commit that has already been pushed?",
+        question: "Which command creates a new branch called feature-login?",
         options: [
-            "No, pushed commits can never be changed",
-            "Yes, by deleting the entire repository",
-            "Yes, by rewriting history, but it can affect collaborators",
-            "Git automatically deletes old commits"
-        ],
-        answer: 2,
-        explanation: "Commands such as git reset followed by a force push can rewrite published history. This can disrupt collaborators. Prefer git revert for shared branches."
-    },
-    {
-        question: "What is the safest way to undo a production commit that has already been shared?",
-        options: [
-            "git reset --hard",
-            "Delete the main branch",
-            "git revert",
-            "git stash"
-        ],
-        answer: 2,
-        explanation: "git revert creates a new commit that reverses the changes of an earlier commit while preserving shared history."
-    },
-    {
-        question: "What happens if we commit code but forget to push?",
-        options: [
-            "The code is saved locally but not uploaded to the remote repository",
-            "Git automatically pushes after one hour",
-            "The commit is lost immediately",
-            "GitHub Pages automatically deploys it"
+            "git branch feature-login",
+            "git create feature-login",
+            "git push feature-login",
+            "git commit feature-login"
         ],
         answer: 0,
-        explanation: "A commit is stored in your local repository. Other developers and GitHub cannot see it until you push it."
+        explanation: "git branch feature-login creates a branch. It does not switch to it."
     },
     {
-        question: "What happens if we delete a feature branch after merging?",
+        question: "What is the purpose of a Pull Request?",
         options: [
-            "The merged code is automatically deleted",
-            "The merged changes remain in main",
-            "The entire repository is deleted",
-            "All commits are removed"
+            "To delete a branch",
+            "To review and merge proposed changes",
+            "To install Git",
+            "To download a repository"
         ],
         answer: 1,
-        explanation: "Deleting a merged feature branch removes the branch reference, not the changes already integrated into main."
+        explanation: "A Pull Request allows team members to review changes before merging."
     },
     {
-        question: "Can we recover a commit that is no longer visible in git log?",
+        question: "Two developers modify the same lines in a file. What might happen?",
         options: [
-            "No, it is permanently lost",
-            "Yes, using git reflog, if the commit is still available locally",
-            "Only by reinstalling Git",
-            "By running git push"
+            "Git automatically deletes the file",
+            "A merge conflict",
+            "The repository gets deleted",
+            "The branch gets renamed"
         ],
         answer: 1,
-        explanation: "git reflog records local HEAD movements. It can help locate previous commits and recover them using git branch or git reset, provided the commit object is still available."
+        explanation: "Git may report a merge conflict when it cannot automatically combine changes."
+    },
+    {
+        question: "Which command safely creates a new commit that reverses an earlier commit?",
+        options: [
+            "git delete",
+            "git reset --hard",
+            "git revert",
+            "git remove"
+        ],
+        answer: 2,
+        explanation: "git revert creates a new commit that reverses the changes from an earlier commit."
+    },
+    {
+        question: "What is the main purpose of protecting the main branch?",
+        options: [
+            "To prevent all developers from accessing Git",
+            "To ensure changes follow review and approval rules",
+            "To stop developers creating branches",
+            "To disable commits permanently"
+        ],
+        answer: 1,
+        explanation: "Branch protection enforces rules such as Pull Request reviews and status checks."
     }
 ];
 
-// ----------------------------------
-// RENDER QUESTIONS
-// ----------------------------------
+// ========================================
+// GET HTML ELEMENTS
+// ========================================
 
-const container = document.getElementById("questionsContainer");
-const form = document.getElementById("gitQuizForm");
+const questionsContainer =
+    document.getElementById("questionsContainer");
 
-questions.forEach((q, index) => {
+const quizForm =
+    document.getElementById("quizForm");
 
-    const card = document.createElement("section");
-    card.className = "question-card";
+const progressBar =
+    document.getElementById("progressBar");
 
-    const top = document.createElement("div");
-    top.className = "question-top";
+const progressText =
+    document.getElementById("progressText");
 
-    top.innerHTML = `
-        <span class="question-number">
-            QUESTION ${String(index + 1).padStart(2, "0")}
-        </span>
-        <span class="question-points">1 POINT</span>
-    `;
+const answerMessage =
+    document.getElementById("answerMessage");
 
-    const heading = document.createElement("h3");
-    heading.textContent = q.question;
+const submitBtn =
+    document.getElementById("submitBtn");
 
-    card.appendChild(top);
-    card.appendChild(heading);
+const resultContainer =
+    document.getElementById("resultContainer");
 
-    q.options.forEach((option, optionIndex) => {
+const scoreDisplay =
+    document.getElementById("scoreDisplay");
 
-        const label = document.createElement("label");
-        label.className = "option";
+const resultMessage =
+    document.getElementById("resultMessage");
 
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "q" + index;
-        input.value = optionIndex;
-        input.required = true;
+const answerReview =
+    document.getElementById("answerReview");
 
-        const text = document.createElement("span");
-        text.textContent = option;
+const retakeBtn =
+    document.getElementById("retakeBtn");
 
-        label.appendChild(input);
-        label.appendChild(text);
+// Stop with a clear error if an expected HTML element is missing.
+const requiredElements = {
+    questionsContainer,
+    quizForm,
+    progressBar,
+    progressText,
+    answerMessage,
+    submitBtn,
+    resultContainer,
+    scoreDisplay,
+    resultMessage,
+    answerReview,
+    retakeBtn
+};
 
-        card.appendChild(label);
-
-        input.addEventListener("change", () => {
-
-            card.querySelectorAll(".option").forEach(item => {
-                item.classList.remove("selected");
-            });
-
-            label.classList.add("selected");
-
-            updateProgress();
-
-        });
-
-    });
-
-    container.appendChild(card);
-
-});
-
-// ----------------------------------
-// PROGRESS TRACKER
-// ----------------------------------
-
-function updateProgress() {
-
-    let answered = 0;
-
-    questions.forEach((q, index) => {
-
-        if (form.querySelector(`input[name="q${index}"]:checked`)) {
-            answered++;
-        }
-
-    });
-
-    document.getElementById("progressText").textContent =
-        `${answered} / ${questions.length} Answered`;
-
-    document.getElementById("progressBar").style.width =
-        `${(answered / questions.length) * 100}%`;
-
-    document.getElementById("submitBtn").disabled =
-        answered !== questions.length;
+for (const [name, element] of Object.entries(requiredElements)) {
+    if (!element) {
+        throw new Error(`Required HTML element not found: ${name}`);
+    }
 }
 
-// ----------------------------------
-// SUBMIT QUIZ
-// ----------------------------------
+// ========================================
+// DISPLAY QUESTIONS
+// ========================================
 
-form.addEventListener("submit", function(event) {
+function loadQuestions() {
+    questionsContainer.innerHTML = "";
 
+    questions.forEach((item, index) => {
+        const card = document.createElement("section");
+        card.className = "question-card";
+
+        const number = document.createElement("div");
+        number.className = "question-number";
+        number.textContent = `QUESTION ${index + 1}`;
+
+        const heading = document.createElement("h3");
+        heading.textContent = item.question;
+
+        card.appendChild(number);
+        card.appendChild(heading);
+
+        item.options.forEach((option, optionIndex) => {
+            const label = document.createElement("label");
+            label.className = "option";
+
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = `question-${index}`;
+            radio.value = optionIndex;
+
+            const optionText = document.createElement("span");
+            optionText.textContent = option;
+
+            label.appendChild(radio);
+            label.appendChild(optionText);
+
+            card.appendChild(label);
+
+            radio.addEventListener("change", () => {
+                updateSelectedStyle(index);
+                updateProgress();
+            });
+        });
+
+        questionsContainer.appendChild(card);
+    });
+
+    updateProgress();
+}
+
+// ========================================
+// UPDATE SELECTED ANSWER STYLE
+// ========================================
+
+function updateSelectedStyle(questionIndex) {
+    const card = questionsContainer.children[questionIndex];
+
+    card.querySelectorAll(".option").forEach(label => {
+        const radio = label.querySelector("input");
+        label.classList.toggle("selected", radio.checked);
+    });
+}
+
+// ========================================
+// UPDATE PROGRESS BAR
+// ========================================
+
+function updateProgress() {
+    let answered = 0;
+
+    questions.forEach((item, index) => {
+        const selected = document.querySelector(
+            `input[name="question-${index}"]:checked`
+        );
+
+        if (selected) {
+            answered++;
+        }
+    });
+
+    const percentage = (answered / questions.length) * 100;
+
+    progressBar.style.width = `${percentage}%`;
+
+    progressText.textContent =
+        `${answered} / ${questions.length} Answered`;
+
+    answerMessage.textContent =
+        answered === questions.length
+            ? "All questions answered. You are ready to submit!"
+            : `${questions.length - answered} question(s) remaining.`;
+}
+
+// ========================================
+// SUBMIT QUIZ AND CALCULATE SCORE
+// ========================================
+
+quizForm.addEventListener("submit", function(event) {
     event.preventDefault();
 
     let score = 0;
-    let reviewHTML = "";
+    let unanswered = 0;
 
-    questions.forEach((q, index) => {
+    const userAnswers = [];
 
-        const selected = form.querySelector(
-            `input[name="q${index}"]:checked`
+    questions.forEach((item, index) => {
+        const selected = document.querySelector(
+            `input[name="question-${index}"]:checked`
         );
 
-        const selectedAnswer = Number(selected.value);
-        const correct = selectedAnswer === q.answer;
-
-        if (correct) {
-            score++;
+        if (!selected) {
+            unanswered++;
+            userAnswers.push(null);
+            return;
         }
 
-        reviewHTML += `
-            <div class="review-item">
+        const selectedAnswer = Number(selected.value);
+        userAnswers.push(selectedAnswer);
 
-                <h4>
-                    ${index + 1}. ${q.question}
-                </h4>
-
-                <div class="review-status ${
-                    correct ? "correct-answer" : "wrong-answer"
-                }">
-                    ${correct ? "✓ Correct Answer" : "✗ Incorrect Answer"}
-                </div>
-
-                <p>
-                    <strong>Your answer:</strong>
-                    ${q.options[selectedAnswer]}
-                </p>
-
-                <p>
-                    <strong>Correct answer:</strong>
-                    ${q.options[q.answer]}
-                </p>
-
-                <p class="explanation">
-                    ${q.explanation}
-                </p>
-
-            </div>
-        `;
-
+        if (selectedAnswer === item.answer) {
+            score++;
+        }
     });
+
+    if (unanswered > 0) {
+        answerMessage.textContent =
+            `Please answer all ${unanswered} remaining question(s).`;
+
+        const firstUnanswered = userAnswers.findIndex(
+            answer => answer === null
+        );
+
+        questionsContainer.children[firstUnanswered].scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        return;
+    }
+
+    showResults(score, userAnswers);
+});
+
+// ========================================
+// DISPLAY RESULTS AND ANSWER REVIEW
+// ========================================
+
+function showResults(score, userAnswers) {
+    scoreDisplay.textContent = `${score} / ${questions.length}`;
 
     const percentage = Math.round(
         (score / questions.length) * 100
     );
 
-    const wrong = questions.length - score;
+    if (percentage === 100) {
+        resultMessage.textContent = "Excellent! Perfect score!";
+    } else if (percentage >= 75) {
+        resultMessage.textContent = "Great job! You know your Git!";
+    } else if (percentage >= 50) {
+        resultMessage.textContent = "Good effort! Keep practising.";
+    } else {
+        resultMessage.textContent = "Keep learning. Try again!";
+    }
 
-    document.getElementById("scoreDisplay").textContent =
-        `${score}/${questions.length}`;
+    answerReview.innerHTML = "";
 
-    document.getElementById("percentage").textContent =
-        `${percentage}%`;
+    questions.forEach((item, index) => {
+        const isCorrect = userAnswers[index] === item.answer;
 
-    document.getElementById("correctCount").textContent = score;
+        const review = document.createElement("div");
 
-    document.getElementById("wrongCount").textContent = wrong;
+        review.className = isCorrect
+            ? "review-item correct"
+            : "review-item incorrect";
 
-    document.getElementById("answerReview").innerHTML = reviewHTML;
+        const heading = document.createElement("strong");
+        heading.textContent =
+            `${index + 1}. ${item.question}`;
 
-    document.getElementById("resultMessage").textContent =
-        score === 8
-            ? "Outstanding! You are a Git champion!"
-            : score >= 6
-            ? "Excellent work! You have a strong understanding of Git."
-            : score >= 4
-            ? "Good effort! Keep practising your Git skills."
-            : "Keep learning! Review the explanations and try again.";
+        const yourAnswer = document.createElement("p");
+        yourAnswer.textContent =
+            `Your answer: ${item.options[userAnswers[index]]}`;
 
-    document.getElementById("quizResult").hidden = false;
+        const correctAnswer = document.createElement("p");
+        correctAnswer.textContent =
+            `Correct answer: ${item.options[item.answer]}`;
 
-    document.getElementById("submitBtn").disabled = true;
+        const explanation = document.createElement("p");
+        explanation.textContent = item.explanation;
 
-    document.getElementById("quizResult").scrollIntoView({
+        const status = document.createElement("p");
+        status.textContent = isCorrect ? "✓ Correct" : "✗ Incorrect";
+
+        review.appendChild(heading);
+        review.appendChild(status);
+        review.appendChild(yourAnswer);
+        review.appendChild(correctAnswer);
+        review.appendChild(explanation);
+
+        answerReview.appendChild(review);
+    });
+
+    resultContainer.classList.remove("hidden");
+
+    submitBtn.disabled = true;
+
+    questionsContainer.style.display = "none";
+    document.querySelector(".progress-section").style.display = "none";
+    document.querySelector(".instruction").style.display = "none";
+    document.querySelector(".submit-section").style.display = "none";
+
+    resultContainer.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
+}
 
-});
-
-// ----------------------------------
+// ========================================
 // RETAKE QUIZ
-// ----------------------------------
+// ========================================
 
-document.getElementById("retakeQuiz").addEventListener("click", () => {
+retakeBtn.addEventListener("click", function() {
+    quizForm.reset();
 
-    form.reset();
+    submitBtn.disabled = false;
 
-    document.querySelectorAll(".option").forEach(option => {
-        option.classList.remove("selected");
-    });
+    questionsContainer.style.display = "block";
+    document.querySelector(".progress-section").style.display = "block";
+    document.querySelector(".instruction").style.display = "block";
+    document.querySelector(".submit-section").style.display = "block";
 
-    document.getElementById("quizResult").hidden = true;
+    resultContainer.classList.add("hidden");
 
-    document.getElementById("progressBar").style.width = "0%";
-
-    document.getElementById("progressText").textContent = "0 / 8 Answered";
-
-    document.getElementById("submitBtn").disabled = true;
+    loadQuestions();
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
-
 });
+
+// ========================================
+// INITIALIZE QUIZ
+// ========================================
+
+loadQuestions();
+
+console.log("Git Workshop Quiz loaded successfully!");

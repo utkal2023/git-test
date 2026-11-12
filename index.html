@@ -5,125 +5,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Git Knowledge Challenge</title>
+    <title>Interactive Git Workshop Quiz</title>
 
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
 </head>
 
 <body>
 
-    <div class="page-wrapper">
+    <header class="hero">
+        <div class="hero-content">
+            <span class="eyebrow">INTERACTIVE GIT WORKSHOP</span>
 
-        <header class="hero">
-            <div class="hero-tag">
-                <span class="live-dot"></span>
-                INTERACTIVE GIT WORKSHOP
-            </div>
-
-            <h1>Git Knowledge <span>Challenge</span></h1>
+            <h1>Git Knowledge Challenge</h1>
 
             <p>
-                Think like a developer. Solve real-world Git scenarios.
-                Test your knowledge!
+                Think like a developer. Test your Git knowledge.
+                Learn by doing.
             </p>
 
-            <div class="quiz-meta">
-                <div class="meta-item">
-                    <span class="meta-icon">◷</span>
-                    <span>10 Minutes</span>
+            <div class="stats">
+                <div class="stat">
+                    <strong>10</strong>
+                    <span>Minutes</span>
                 </div>
 
-                <div class="meta-item">
-                    <span class="meta-icon">▤</span>
-                    <span>8 Questions</span>
+                <div class="stat">
+                    <strong>8</strong>
+                    <span>Questions</span>
                 </div>
 
-                <div class="meta-item">
-                    <span class="meta-icon">★</span>
-                    <span>1 Point Each</span>
-                </div>
-            </div>
-        </header>
-
-        <main class="quiz-container">
-
-            <div class="progress-section">
-                <div class="progress-info">
-                    <span>YOUR PROGRESS</span>
-                    <span id="progressText">0 / 8 Answered</span>
-                </div>
-
-                <div class="progress-track">
-                    <div id="progressBar" class="progress-fill"></div>
+                <div class="stat">
+                    <strong>1</strong>
+                    <span>Point Each</span>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <form id="gitQuizForm">
+    <main class="container">
 
-                <div id="questionsContainer"></div>
+        <section class="progress-section">
+            <div class="progress-heading">
+                <span>YOUR PROGRESS</span>
+                <span id="progressText">0 / 8 Answered</span>
+            </div>
 
-                <div class="submit-section">
-                    <p>Review your answers before submitting.</p>
+            <div class="progress-track">
+                <div id="progressBar"></div>
+            </div>
+        </section>
 
-                    <button type="submit" id="submitBtn" disabled>
-                        Submit Answers <span>→</span>
-                    </button>
-                </div>
+        <div class="instruction">
+            Select one answer for each question. Submit when you are ready.
+        </div>
 
-            </form>
+        <form id="quizForm">
 
-            <section id="quizResult" class="result-box" hidden>
+            <div id="questionsContainer">
+                <!-- Questions are loaded by app.js -->
+            </div>
 
-                <div class="result-header">
-                    <span class="result-icon">🏆</span>
-                    <h2>Challenge Completed!</h2>
-                    <p id="resultMessage"></p>
-                </div>
+            <div class="submit-section">
+                <p id="answerMessage">
+                    Review your answers before submitting.
+                </p>
 
-                <div class="score-card">
-                    <div class="score-circle">
-                        <span id="scoreDisplay">0/8</span>
-                        <small>SCORE</small>
-                    </div>
-
-                    <div class="score-details">
-                        <div>
-                            <strong id="percentage">0%</strong>
-                            <span>Percentage</span>
-                        </div>
-
-                        <div>
-                            <strong id="correctCount">0</strong>
-                            <span>Correct</span>
-                        </div>
-
-                        <div>
-                            <strong id="wrongCount">0</strong>
-                            <span>Incorrect</span>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 class="review-heading">Answer Review</h3>
-
-                <div id="answerReview"></div>
-
-                <button type="button" id="retakeQuiz" class="retake-btn">
-                    ↻ Retake Challenge
+                <button type="submit" id="submitBtn">
+                    Submit Answers →
                 </button>
+            </div>
 
-            </section>
+        </form>
 
-        </main>
+        <section id="resultContainer" class="result-container hidden">
 
-        <footer>
-            <p>Powered by <strong>DevOps Team</strong></p>
-            <span>LEARN • PRACTICE • COLLABORATE</span>
-        </footer>
+            <div class="result-icon">🏆</div>
 
-    </div>
+            <h2>Quiz Completed!</h2>
 
-    <script src="js/app.js"></script>
+            <p class="result-label">YOUR FINAL SCORE</p>
+
+            <div id="scoreDisplay" class="score-display">0 / 8</div>
+
+            <h3 id="resultMessage"></h3>
+
+            <div id="answerReview"></div>
+
+            <button type="button" id="retakeBtn">
+                Retake Quiz ↻
+            </button>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <strong>Powered by SunTec DevOps Team</strong>
+        <p>LEARN • PRACTICE • COLLABORATE</p>
+    </footer>
 
 </body>
 </html>
+
