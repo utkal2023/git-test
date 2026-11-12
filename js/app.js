@@ -1,160 +1,308 @@
 
-console.log("DevOps Team Portal loaded successfully");
+console.log("Git Knowledge Challenge loaded successfully");
 
-// Original service status functionality
-document.getElementById("status").style.color = "green";
+// ----------------------------------
+// QUIZ QUESTIONS AND ANSWERS
+// ----------------------------------
 
-// ---------------------------------
-// TAB SWITCHING
-// ---------------------------------
+const questions = [
+    {
+        question: "What happens if two developers push changes to the same branch?",
+        options: [
+            "Both changes always overwrite each other",
+            "The second push may be rejected if the remote branch has new commits",
+            "Git automatically deletes one developer's code",
+            "Git automatically creates a new branch"
+        ],
+        answer: 1,
+        explanation: "Git rejects a non-fast-forward push when the remote has commits that your local branch does not contain. Fetch and integrate those changes before pushing."
+    },
+    {
+        question: "Can a developer directly push to a protected main branch?",
+        options: [
+            "Yes, always",
+            "Yes, using git push --force",
+            "No, branch protection can block direct pushes",
+            "Only during working hours"
+        ],
+        answer: 2,
+        explanation: "Branch protection rules can prevent direct pushes and enforce Pull Requests, approvals and other checks."
+    },
+    {
+        question: "What happens when two people modify the same line?",
+        options: [
+            "Git always selects the latest change",
+            "A merge conflict may occur",
+            "Both changes are automatically combined",
+            "The repository gets deleted"
+        ],
+        answer: 1,
+        explanation: "Git may report a merge conflict when it cannot automatically reconcile overlapping changes. Developers must resolve the conflict."
+    },
+    {
+        question: "Can we delete a commit that has already been pushed?",
+        options: [
+            "No, pushed commits can never be changed",
+            "Yes, by deleting the entire repository",
+            "Yes, by rewriting history, but it can affect collaborators",
+            "Git automatically deletes old commits"
+        ],
+        answer: 2,
+        explanation: "Commands such as git reset followed by a force push can rewrite published history. This can disrupt collaborators. Prefer git revert for shared branches."
+    },
+    {
+        question: "What is the safest way to undo a production commit that has already been shared?",
+        options: [
+            "git reset --hard",
+            "Delete the main branch",
+            "git revert",
+            "git stash"
+        ],
+        answer: 2,
+        explanation: "git revert creates a new commit that reverses the changes of an earlier commit while preserving shared history."
+    },
+    {
+        question: "What happens if we commit code but forget to push?",
+        options: [
+            "The code is saved locally but not uploaded to the remote repository",
+            "Git automatically pushes after one hour",
+            "The commit is lost immediately",
+            "GitHub Pages automatically deploys it"
+        ],
+        answer: 0,
+        explanation: "A commit is stored in your local repository. Other developers and GitHub cannot see it until you push it."
+    },
+    {
+        question: "What happens if we delete a feature branch after merging?",
+        options: [
+            "The merged code is automatically deleted",
+            "The merged changes remain in main",
+            "The entire repository is deleted",
+            "All commits are removed"
+        ],
+        answer: 1,
+        explanation: "Deleting a merged feature branch removes the branch reference, not the changes already integrated into main."
+    },
+    {
+        question: "Can we recover a commit that is no longer visible in git log?",
+        options: [
+            "No, it is permanently lost",
+            "Yes, using git reflog, if the commit is still available locally",
+            "Only by reinstalling Git",
+            "By running git push"
+        ],
+        answer: 1,
+        explanation: "git reflog records local HEAD movements. It can help locate previous commits and recover them using git branch or git reset, provided the commit object is still available."
+    }
+];
 
-const tabButtons = document.querySelectorAll(".tab-button");
-const tabContents = document.querySelectorAll(".tab-content");
+// ----------------------------------
+// RENDER QUESTIONS
+// ----------------------------------
 
-tabButtons.forEach(button => {
-    button.addEventListener("click", function () {
+const container = document.getElementById("questionsContainer");
+const form = document.getElementById("gitQuizForm");
 
-        const selectedTab = this.dataset.tab;
+questions.forEach((q, index) => {
 
-        tabButtons.forEach(btn => btn.classList.remove("active"));
-        tabContents.forEach(tab => tab.classList.remove("active"));
+    const card = document.createElement("section");
+    card.className = "question-card";
 
-        this.classList.add("active");
-        document.getElementById(selectedTab).classList.add("active");
+    const top = document.createElement("div");
+    top.className = "question-top";
+
+    top.innerHTML = `
+        <span class="question-number">
+            QUESTION ${String(index + 1).padStart(2, "0")}
+        </span>
+        <span class="question-points">1 POINT</span>
+    `;
+
+    const heading = document.createElement("h3");
+    heading.textContent = q.question;
+
+    card.appendChild(top);
+    card.appendChild(heading);
+
+    q.options.forEach((option, optionIndex) => {
+
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "q" + index;
+        input.value = optionIndex;
+        input.required = true;
+
+        const text = document.createElement("span");
+        text.textContent = option;
+
+        label.appendChild(input);
+        label.appendChild(text);
+
+        card.appendChild(label);
+
+        input.addEventListener("change", () => {
+
+            card.querySelectorAll(".option").forEach(item => {
+                item.classList.remove("selected");
+            });
+
+            label.classList.add("selected");
+
+            updateProgress();
+
+        });
 
     });
+
+    container.appendChild(card);
+
 });
 
-// ---------------------------------
-// GIT QUIZ
-// ---------------------------------
+// ----------------------------------
+// PROGRESS TRACKER
+// ----------------------------------
 
-const correctAnswers = {
-    q1: "b",
-    q2: "c",
-    q3: "b",
-    q4: "c",
-    q5: "c",
-    q6: "a",
-    q7: "b",
-    q8: "b"
-};
+function updateProgress() {
 
-const explanations = {
-    q1: "A non-fast-forward push may be rejected when another developer has pushed new commits. Fetch and integrate those changes before pushing again.",
+    let answered = 0;
 
-    q2: "Branch protection rules can prevent direct pushes to main and require changes through Pull Requests.",
+    questions.forEach((q, index) => {
 
-    q3: "When Git cannot automatically reconcile overlapping changes, it reports a merge conflict. Developers must resolve it.",
+        if (form.querySelector(`input[name="q${index}"]:checked`)) {
+            answered++;
+        }
 
-    q4: "A pushed commit can be removed from branch history through history rewriting, but this can disrupt collaborators. For shared branches, prefer git revert.",
+    });
 
-    q5: "git revert creates a new commit that reverses the changes of an earlier commit without rewriting shared history.",
+    document.getElementById("progressText").textContent =
+        `${answered} / ${questions.length} Answered`;
 
-    q6: "A commit is stored in your local Git repository. It will not reach GitHub until you push it.",
+    document.getElementById("progressBar").style.width =
+        `${(answered / questions.length) * 100}%`;
 
-    q7: "Deleting a merged feature branch does not remove its changes from main.",
+    document.getElementById("submitBtn").disabled =
+        answered !== questions.length;
+}
 
-    q8: "git reflog records local HEAD movements and can help recover commits that are no longer shown in git log, while the objects remain available."
-};
+// ----------------------------------
+// SUBMIT QUIZ
+// ----------------------------------
 
-const answerText = {
-    q1: "The second push may be rejected if the remote branch has new commits",
-    q2: "No, branch protection can block direct pushes",
-    q3: "A merge conflict may occur",
-    q4: "Yes, by rewriting history, but it can affect collaborators",
-    q5: "git revert",
-    q6: "The code is saved locally but not uploaded to the remote repository",
-    q7: "The merged changes remain in main",
-    q8: "Yes, using git reflog, if the commit is still reachable in local Git records"
-};
-
-const quizForm = document.getElementById("gitQuizForm");
-
-quizForm.addEventListener("submit", function(event) {
+form.addEventListener("submit", function(event) {
 
     event.preventDefault();
-
-    const formData = new FormData(quizForm);
 
     let score = 0;
     let reviewHTML = "";
 
-    for (let i = 1; i <= 8; i++) {
+    questions.forEach((q, index) => {
 
-        const question = "q" + i;
-        const selectedAnswer = formData.get(question);
-        const isCorrect = selectedAnswer === correctAnswers[question];
+        const selected = form.querySelector(
+            `input[name="q${index}"]:checked`
+        );
 
-        if (isCorrect) {
+        const selectedAnswer = Number(selected.value);
+        const correct = selectedAnswer === q.answer;
+
+        if (correct) {
             score++;
         }
 
         reviewHTML += `
             <div class="review-item">
 
-                <p><strong>Question ${i}</strong></p>
+                <h4>
+                    ${index + 1}. ${q.question}
+                </h4>
 
-                <p class="${isCorrect ? 'correct-answer' : 'wrong-answer'}">
-                    ${isCorrect ? "✓ Correct Answer" : "✗ Incorrect Answer"}
+                <div class="review-status ${
+                    correct ? "correct-answer" : "wrong-answer"
+                }">
+                    ${correct ? "✓ Correct Answer" : "✗ Incorrect Answer"}
+                </div>
+
+                <p>
+                    <strong>Your answer:</strong>
+                    ${q.options[selectedAnswer]}
                 </p>
 
                 <p>
                     <strong>Correct answer:</strong>
-                    ${answerText[question]}
+                    ${q.options[q.answer]}
                 </p>
 
                 <p class="explanation">
-                    ${explanations[question]}
+                    ${q.explanation}
                 </p>
 
             </div>
         `;
-    }
 
-    const percentage = Math.round((score / 8) * 100);
+    });
 
-    let message = "";
+    const percentage = Math.round(
+        (score / questions.length) * 100
+    );
 
-    if (score === 8) {
-        message = "Excellent! Git expert!";
-    } else if (score >= 6) {
-        message = "Great job! You have good Git knowledge.";
-    } else if (score >= 4) {
-        message = "Good attempt! Keep practising.";
-    } else {
-        message = "Keep learning! Try the quiz again.";
-    }
+    const wrong = questions.length - score;
 
-    document.getElementById("scoreDisplay").innerHTML = `
-        <div class="score-card">
-            <div class="score-number">${score} / 8</div>
-            <h3>${percentage}% Score</h3>
-            <p>${message}</p>
-        </div>
-    `;
+    document.getElementById("scoreDisplay").textContent =
+        `${score}/${questions.length}`;
+
+    document.getElementById("percentage").textContent =
+        `${percentage}%`;
+
+    document.getElementById("correctCount").textContent = score;
+
+    document.getElementById("wrongCount").textContent = wrong;
 
     document.getElementById("answerReview").innerHTML = reviewHTML;
 
+    document.getElementById("resultMessage").textContent =
+        score === 8
+            ? "Outstanding! You are a Git champion!"
+            : score >= 6
+            ? "Excellent work! You have a strong understanding of Git."
+            : score >= 4
+            ? "Good effort! Keep practising your Git skills."
+            : "Keep learning! Review the explanations and try again.";
+
     document.getElementById("quizResult").hidden = false;
 
+    document.getElementById("submitBtn").disabled = true;
+
     document.getElementById("quizResult").scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
+        block: "start"
     });
 
 });
 
-// ---------------------------------
+// ----------------------------------
 // RETAKE QUIZ
-// ---------------------------------
+// ----------------------------------
 
-document.getElementById("retakeQuiz").addEventListener("click", function() {
+document.getElementById("retakeQuiz").addEventListener("click", () => {
 
-    quizForm.reset();
+    form.reset();
+
+    document.querySelectorAll(".option").forEach(option => {
+        option.classList.remove("selected");
+    });
 
     document.getElementById("quizResult").hidden = true;
 
-    quizForm.scrollIntoView({
+    document.getElementById("progressBar").style.width = "0%";
+
+    document.getElementById("progressText").textContent = "0 / 8 Answered";
+
+    document.getElementById("submitBtn").disabled = true;
+
+    window.scrollTo({
+        top: 0,
         behavior: "smooth"
     });
 

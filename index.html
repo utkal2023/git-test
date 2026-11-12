@@ -3,257 +3,125 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DevOps Team Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Git Knowledge Challenge</title>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <header>
-        <h1>DevOps Team Portal</h1>
-        <p>Welcome to our development team</p>
-    </header>
+    <div class="page-wrapper">
 
-    <!-- Navigation Tabs -->
-    <nav class="navbar">
-        <button class="tab-button active" data-tab="home">
-            Home
-        </button>
-        <button class="tab-button" data-tab="quiz">
-            Git Quiz
-        </button>
-    </nav>
+        <header class="hero">
+            <div class="hero-tag">
+                <span class="live-dot"></span>
+                INTERACTIVE GIT WORKSHOP
+            </div>
 
-    <!-- HOME TAB -->
-    <div id="home" class="tab-content active">
+            <h1>Git Knowledge <span>Challenge</span></h1>
 
-        <main>
-            <section class="card">
-                <h2>Service Status</h2>
-                <p id="status">All systems operational</p>
-            </section>
-
-            <section class="card">
-                <h2>Deployment Information</h2>
-                <p>Current version: 1.0.0</p>
-            </section>
-
-            <section class="card">
-                <h2>Team Information</h2>
-                <p>Our team builds reliable applications.</p>
-            </section>
-        </main>
-
-    </div>
-
-    <!-- GIT QUIZ TAB -->
-    <div id="quiz" class="tab-content">
-
-        <div class="quiz-container">
-
-            <h2>Git Knowledge Challenge</h2>
-
-            <p class="quiz-intro">
-                Let's test your practical Git knowledge!
-                Answer all 8 questions and submit your answers.
+            <p>
+                Think like a developer. Solve real-world Git scenarios.
+                Test your knowledge!
             </p>
+
+            <div class="quiz-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">◷</span>
+                    <span>10 Minutes</span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="meta-icon">▤</span>
+                    <span>8 Questions</span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="meta-icon">★</span>
+                    <span>1 Point Each</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-container">
+
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>YOUR PROGRESS</span>
+                    <span id="progressText">0 / 8 Answered</span>
+                </div>
+
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
+            </div>
 
             <form id="gitQuizForm">
 
-                <!-- Question 1 -->
-                <fieldset class="question">
-                    <legend>1. What happens if two developers push changes to the same branch?</legend>
+                <div id="questionsContainer"></div>
 
-                    <label><input type="radio" name="q1" value="a" required>
-                        Both changes always overwrite each other
-                    </label>
+                <div class="submit-section">
+                    <p>Review your answers before submitting.</p>
 
-                    <label><input type="radio" name="q1" value="b">
-                        The second push may be rejected if the remote branch has new commits
-                    </label>
-
-                    <label><input type="radio" name="q1" value="c">
-                        Git automatically deletes one developer's code
-                    </label>
-
-                    <label><input type="radio" name="q1" value="d">
-                        Git automatically creates a new branch
-                    </label>
-                </fieldset>
-
-                <!-- Question 2 -->
-                <fieldset class="question">
-                    <legend>2. Can a developer directly push to a protected main branch?</legend>
-
-                    <label><input type="radio" name="q2" value="a" required>
-                        Yes, always
-                    </label>
-
-                    <label><input type="radio" name="q2" value="b">
-                        Yes, if the developer uses git push --force
-                    </label>
-
-                    <label><input type="radio" name="q2" value="c">
-                        No, branch protection can block direct pushes
-                    </label>
-
-                    <label><input type="radio" name="q2" value="d">
-                        Only during working hours
-                    </label>
-                </fieldset>
-
-                <!-- Question 3 -->
-                <fieldset class="question">
-                    <legend>3. What happens when two people modify the same line?</legend>
-
-                    <label><input type="radio" name="q3" value="a" required>
-                        Git always selects the latest change
-                    </label>
-
-                    <label><input type="radio" name="q3" value="b">
-                        A merge conflict may occur
-                    </label>
-
-                    <label><input type="radio" name="q3" value="c">
-                        Both changes are automatically combined
-                    </label>
-
-                    <label><input type="radio" name="q3" value="d">
-                        The repository gets deleted
-                    </label>
-                </fieldset>
-
-                <!-- Question 4 -->
-                <fieldset class="question">
-                    <legend>4. Can we delete a commit that has already been pushed?</legend>
-
-                    <label><input type="radio" name="q4" value="a" required>
-                        No, pushed commits can never be changed
-                    </label>
-
-                    <label><input type="radio" name="q4" value="b">
-                        Yes, by deleting the entire repository
-                    </label>
-
-                    <label><input type="radio" name="q4" value="c">
-                        Yes, by rewriting history, but it can affect collaborators
-                    </label>
-
-                    <label><input type="radio" name="q4" value="d">
-                        Git automatically deletes old commits
-                    </label>
-                </fieldset>
-
-                <!-- Question 5 -->
-                <fieldset class="question">
-                    <legend>5. What is the safest way to undo a production commit that has already been shared?</legend>
-
-                    <label><input type="radio" name="q5" value="a" required>
-                        git reset --hard
-                    </label>
-
-                    <label><input type="radio" name="q5" value="b">
-                        Delete the main branch
-                    </label>
-
-                    <label><input type="radio" name="q5" value="c">
-                        git revert
-                    </label>
-
-                    <label><input type="radio" name="q5" value="d">
-                        git stash
-                    </label>
-                </fieldset>
-
-                <!-- Question 6 -->
-                <fieldset class="question">
-                    <legend>6. What happens if we commit code but forget to push?</legend>
-
-                    <label><input type="radio" name="q6" value="a" required>
-                        The code is saved locally but not uploaded to the remote repository
-                    </label>
-
-                    <label><input type="radio" name="q6" value="b">
-                        Git automatically pushes after one hour
-                    </label>
-
-                    <label><input type="radio" name="q6" value="c">
-                        The commit is lost immediately
-                    </label>
-
-                    <label><input type="radio" name="q6" value="d">
-                        GitHub Pages automatically deploys it
-                    </label>
-                </fieldset>
-
-                <!-- Question 7 -->
-                <fieldset class="question">
-                    <legend>7. What happens if we delete a feature branch after merging?</legend>
-
-                    <label><input type="radio" name="q7" value="a" required>
-                        The merged code is automatically deleted
-                    </label>
-
-                    <label><input type="radio" name="q7" value="b">
-                        The merged changes remain in main
-                    </label>
-
-                    <label><input type="radio" name="q7" value="c">
-                        The entire repository is deleted
-                    </label>
-
-                    <label><input type="radio" name="q7" value="d">
-                        All commits are removed
-                    </label>
-                </fieldset>
-
-                <!-- Question 8 -->
-                <fieldset class="question">
-                    <legend>8. Can we recover a commit that is no longer visible in git log?</legend>
-
-                    <label><input type="radio" name="q8" value="a" required>
-                        No, it is permanently lost
-                    </label>
-
-                    <label><input type="radio" name="q8" value="b">
-                        Yes, using git reflog, if the commit is still reachable in local Git records
-                    </label>
-
-                    <label><input type="radio" name="q8" value="c">
-                        Only by reinstalling Git
-                    </label>
-
-                    <label><input type="radio" name="q8" value="d">
-                        By running git push
-                    </label>
-                </fieldset>
-
-                <button type="submit" class="submit-btn">
-                    Submit Answers
-                </button>
+                    <button type="submit" id="submitBtn" disabled>
+                        Submit Answers <span>→</span>
+                    </button>
+                </div>
 
             </form>
 
-            <!-- RESULT SECTION -->
-            <div id="quizResult" class="result-box" hidden>
-                <h2>Quiz Results</h2>
+            <section id="quizResult" class="result-box" hidden>
 
-                <div id="scoreDisplay"></div>
+                <div class="result-header">
+                    <span class="result-icon">🏆</span>
+                    <h2>Challenge Completed!</h2>
+                    <p id="resultMessage"></p>
+                </div>
 
-                <h3>Answer Review</h3>
+                <div class="score-card">
+                    <div class="score-circle">
+                        <span id="scoreDisplay">0/8</span>
+                        <small>SCORE</small>
+                    </div>
+
+                    <div class="score-details">
+                        <div>
+                            <strong id="percentage">0%</strong>
+                            <span>Percentage</span>
+                        </div>
+
+                        <div>
+                            <strong id="correctCount">0</strong>
+                            <span>Correct</span>
+                        </div>
+
+                        <div>
+                            <strong id="wrongCount">0</strong>
+                            <span>Incorrect</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="review-heading">Answer Review</h3>
+
                 <div id="answerReview"></div>
 
-                <button id="retakeQuiz" class="submit-btn">
-                    Retake Quiz
+                <button type="button" id="retakeQuiz" class="retake-btn">
+                    ↻ Retake Challenge
                 </button>
-            </div>
 
-        </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>Powered by <strong>DevOps Team</strong></p>
+            <span>LEARN • PRACTICE • COLLABORATE</span>
+        </footer>
+
     </div>
-
-    <footer>
-        Git Interactive Workshop
-    </footer>
 
     <script src="js/app.js"></script>
 
